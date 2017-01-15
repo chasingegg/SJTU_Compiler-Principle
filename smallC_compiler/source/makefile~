@@ -7,13 +7,13 @@ scc:lex.yy.o y.tab.o
 lex.yy.o:lex.yy.c y.tab.h
 	$(CC) -c lex.yy.c 2> error.err
 
-y.tab.o:y.tab.c node.h tree.h semantics.h translate.h optimize.h interprete.h
+y.tab.o:y.tab.c node.h ast.h semantics.h translate.h optimize.h interprete.h
 	$(CC) -c y.tab.c 2> error.err
 
-y.tab.c y.tab.h:smallc.y def.h node.h tree.h semantics.h translate.h optimize.h interprete.h
+y.tab.c y.tab.h:smallc.y def.h node.h ast.h semantics.h translate.h optimize.h interprete.h
 	$(YACC) smallc.y -v -d
 
-lex.yy.c:smallc.l def.h node.h tree.h semantics.h translate.h optimize.h interprete.h
+lex.yy.c:smallc.l def.h node.h ast.h semantics.h translate.h optimize.h interprete.h
 	$(LEX) smallc.l
 
 clean:

@@ -3,7 +3,7 @@
 #define FILE_TRANSLATE_H
 #include "def.h"
 #include "node.h"
-#include "tree.h"
+#include "ast.h"
 #include "semantics.h"
 #include <cstring>
 #define REGISTER_STATE_ADDRESS 1

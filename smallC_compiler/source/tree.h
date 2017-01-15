@@ -1,6 +1,11 @@
-//This file gives implemenation of relevent functions to constructing the abstract syntax tree.
-#ifndef FILE_AST_H
-#define FILE_AST_H
+/*
+  Author: Chao Gao
+  file: tree.h
+  This program is for constructing the abstract syntax tree.
+*/
+
+#ifndef FILE_TREE_H
+#define FILE_TREE_H
 
 #include "node.h"
 #include "def.h"
@@ -9,7 +14,7 @@ TreeNode* create_node(TreeNodeType, char*, int, ...);
 TreeNode* merge_node(TreeNode*, TreeNode*);
 void double_space(TreeNode*);
 
-void print_ast(TreeNode*, int);
+void print_tree(TreeNode*, int);
 
 TreeNode* treeroot;
 
@@ -54,7 +59,7 @@ TreeNode* merge_node(TreeNode* a, TreeNode* b) {
 
 char buffer[MAX_LENGTH];
 
-void print_ast(TreeNode* ptr, int depth) {
+void print_tree(TreeNode* ptr, int depth) {
     int i;
     int n = (depth - 1) * 2;
     /*
@@ -93,7 +98,7 @@ void print_ast(TreeNode* ptr, int depth) {
         if (i == ptr->size - 1) {
             buffer[n] = ' ';
         }
-        print_ast(ptr->children[i], depth + 1);
+        print_tree(ptr->children[i], depth + 1);
     }
 }
 

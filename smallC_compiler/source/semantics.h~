@@ -5,7 +5,7 @@
 #include <map>
 #include "def.h"
 #include "node.h"
-#include "tree.h"
+#include "ast.h"
 
 using namespace std;
 #define MAX_LEVEL 200
