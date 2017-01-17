@@ -1,7 +1,7 @@
 /*
   Author: Chao Gao
   file: optimize.h
-  This program does some optimizations and allocates registers.
+  This program does some optimizations and allocate registers.
 */
 #ifndef FILE_OPTIMIZE_H
 #define FILE_OPTIMIZE_H

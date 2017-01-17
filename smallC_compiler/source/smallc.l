@@ -12,6 +12,7 @@
 
 extern int yyval;
 int linenum = 1;
+
 extern char *yytext;
 void yyerror(char *);
 %}

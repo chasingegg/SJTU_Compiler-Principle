@@ -1,11 +1,15 @@
-//This file interprets intermediate representation into MIPS codes.
-#ifndef FILE_INTERPRETE_H
-#define FILE_INTERPRETE_H
+/*
+  Author: Chao Gao
+  file: codegen.h
+  /This program interprets intermediate representation into MIPS codes.
+*/
+#ifndef FILE_CODEGEN_H
+#define FILE_CODEGEN_H
 
 #include "def.h"
 #include "tree.h"
 #include "node.h"
-#include "translate.h"
+#include "intermediate.h"
 #include "optimize.h"
 #define MAX_LENGTH (10000)
 

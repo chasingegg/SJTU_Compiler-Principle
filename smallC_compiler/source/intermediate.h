@@ -1,6 +1,11 @@
-//This file translate syntax tree into three address codes.
-#ifndef FILE_TRANSLATE_H
-#define FILE_TRANSLATE_H
+/*
+  Author: Chao Gao
+  file: intermediate.h
+  This program translate syntax tree into three address codes.
+*/
+
+#ifndef FILE_INTERMEDIATE_H
+#define FILE_INTERMEDIATE_H
 #include "def.h"
 #include "node.h"
 #include "tree.h"
@@ -9,7 +14,7 @@
 #define REGISTER_STATE_ADDRESS 1
 int quadruple_flag, function_begin_sp, main_flag,global_flag,label_count;
 int stack_pointer, retad_pointer,local_register_count = 0, current_sp,tmp_num_var = 0,arrs_cnt = 0,arr_init_cnt = 0;
-int translate_level = 0, translate_cnt[MAX_LEVEL];
+int translate_level = 0, translate_cnt[MAXSIZE];
 ofstream fout("InterCode");
 enum RegType {
 	ADDRESS_LABEL, ADDRESS_CONSTANT, ADDRESS_TEMP,
@@ -28,7 +33,7 @@ struct Address{
 struct Quadruple{
     string op; // name of operation
     int active; //whether it's active
-    int flag;
+    int flag; //whether the arguments should be revised
     Address arguments[3];
 };
 

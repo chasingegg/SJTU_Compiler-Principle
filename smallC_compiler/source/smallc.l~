@@ -11,15 +11,16 @@
 #include "y.tab.h"
 
 extern int yyval;
-int yylineno = 1;
+int linenum = 1;
+
 extern char *yytext;
-void yyerror(char *);
+void error(char *);
 %}
 %%
 [ \t\v\f]+ ;
-[\n] {yylineno = yylineno+1;}
-\"(.*\n)*.*\" {int i;for (i = 0; yytext[i];++i) {if (yytext[i]=='\n') yylineno++;}}
-\/\*(.*\n)*.*\*\/ {int i;for (i = 0; yytext[i];++i) {if (yytext[i]=='\n') yylineno++;}};
+[\n] {linenum = linenum+1;}
+\"(.*\n)*.*\" {int i;for (i = 0; yytext[i];++i) {if (yytext[i]=='\n') linenum++;}}
+\/\*(.*\n)*.*\*\/ {int i;for (i = 0; yytext[i];++i) {if (yytext[i]=='\n') linenum++;}};
 ([0-9]*|0[xX][0-9a-fA-F]+)          { yylval.string = strdup(yytext); return INT; }
 "(" {yylval.string = strdup(yytext); return LP;}
 ")" {yylval.string = strdup(yytext); return RP;}
@@ -73,7 +74,7 @@ void yyerror(char *);
 "!=" {yylval.string = strdup(yytext); return NE_OP;}
 ">>=" {yylval.string = strdup(yytext); return RIGHT_ASSIGN;}
 "<<=" {yylval.string = strdup(yytext); return LEFT_ASSIGN;}
-. {yyerror("Error!");}
+. {error("Error!");}
 %%
 
 

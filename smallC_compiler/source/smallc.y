@@ -10,8 +10,8 @@
 #include "node.h"
 #include "tree.h"
 #include "semantics.h"
-#include "translate.h"
-#include "interprete.h"
+#include "intermediate.h"
+#include "codegen.h"
 #include "optimize.h"
 using namespace std;
 void yyerror(char*);
@@ -193,7 +193,7 @@ UNARYOP:
 #include <stdio.h>
 #include "def.h"
 #include "semantics.h"
-#include "translate.h"
+#include "intermediate.h"
 void yyerror(char *s)
 {
 	fflush(stdout);
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 		interpret();
 	}
 	else
-		printf("Parsing failed.\n");
+		printf("Error.\n");
 	return 0;
 }
 int yywrap()

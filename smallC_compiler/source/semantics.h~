@@ -1,17 +1,20 @@
-//This file checks semantic errors.
+/*
+  Author: Chao Gao
+  file: semantics.h
+  This program checks semantic errors.
+*/
 #ifndef FILE_SEMANTICS_H
 #define FILE_SEMANTICS_H
 #include <vector>
 #include <map>
 #include "def.h"
 #include "node.h"
-#include "ast.h"
+#include "tree.h"
 
 using namespace std;
-#define MAX_LEVEL 200
-#define MAX_DEPTH 200
-#define MAX_FUNCS 200
-struct ptr_cmp { //map compare char[] with their address; maybe it's better to use map <string, >
+#define MAXSIZE 200
+
+struct ptr_cmp { //map compare char[] with their address; 
 	bool operator()(const char* s1, const char* s2) const {
 		return strcmp(s1,s2) < 0;
 	}
@@ -24,15 +27,15 @@ struct SymbolTable {
         map <char*, int, ptr_cmp> width_table; // records the num of "int"s, the actual width should be 4 times of that
 	map <char*, vector<int>, ptr_cmp> array_size_table;
 	int parent_index;//which record the index of his parent in the upper level; -1 means it's the gloabl scope
-} env[MAX_LEVEL][MAX_DEPTH];
-int level = 0,cnt[MAX_LEVEL];// keep track num of symbol tables of this level
+} env[MAXSIZE][MAXSIZE];
+int level = 0,cnt[MAXSIZE];// keep track num of symbol tables of this level
 map <char*, vector<int>, ptr_cmp > func_table;
 map <char*, int, ptr_cmp> func_cnt_table;
 map <char*,map<int,char*>, ptr_cmp > func_overload_table;
 vector <int> tmp_array_size_vector;
-vector <int> func_vector[MAX_FUNCS];
-vector <char*> struct_vector[MAX_FUNCS];
-set <char*, ptr_cmp> func_set[MAX_FUNCS], struct_set[MAX_FUNCS];
+vector <int> func_vector[MAXSIZE];
+vector <char*> struct_vector[MAXSIZE];
+set <char*, ptr_cmp> func_set[MAXSIZE], struct_set[MAXSIZE];
 int func_cnt = 0, struct_cnt = 0, tmp_num_of_var = 0, func_vector_cnt = 0, struct_vector_cnt = 0, tmp_num = 1, tmp_num_struct = 0;
 bool in_func = false, in_for = false, bool_main = false;//to help check classify whether a 'return' happens in a func
 
@@ -353,7 +356,7 @@ bool semantics_check_id(char* s,int num) {
 				report_err("redeclearation of",s,num);
 				return false; 
 	}
-	else return true; //new variable name
+	else return true; 
 }
 
 void semantics_check_var(TreeNode *p) {//OK
