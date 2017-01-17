@@ -33,7 +33,7 @@ struct Address{
 struct Quadruple{
     string op; // name of operation
     int active; //whether it's active
-    int flag;
+    int flag; //whether the arguments should be revised
     Address arguments[3];
 };
 
@@ -42,7 +42,7 @@ vector <int> RegisterState, RegisterOffset,LabelCont, LabelBreak, vs_reg;
 vector <string> vs_id;
 Quadruple new_quadruple();
 Quadruple new_quadruple_arithmetic_im(char *s, int ra, int rb, int im);
-void phase3_translate();
+void intermediate();
 int new_register();
 void set_register_state_to_address(int k);
 Quadruple new_quadruple_function(char *s);

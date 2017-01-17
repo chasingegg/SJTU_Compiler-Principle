@@ -42,7 +42,7 @@ vector <int> RegisterState, RegisterOffset,LabelCont, LabelBreak, vs_reg;
 vector <string> vs_id;
 Quadruple new_quadruple();
 Quadruple new_quadruple_arithmetic_im(char *s, int ra, int rb, int im);
-void phase3_translate();
+void intermediate();
 int new_register();
 void set_register_state_to_address(int k);
 Quadruple new_quadruple_function(char *s);
@@ -413,7 +413,7 @@ int cal_offset(char* s, char *s2) {
 	}
 }
 
-void phase3_translate()
+void intermediate()
 {
     main_flag = 0;
     function_begin_sp = -1;

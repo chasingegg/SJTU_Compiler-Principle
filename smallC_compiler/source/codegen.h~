@@ -266,7 +266,7 @@ void codegen_local() {
 
 void codegen() {
 	codegen_global();
-	codegen_local();
+	interprete_local();
 }
 
 

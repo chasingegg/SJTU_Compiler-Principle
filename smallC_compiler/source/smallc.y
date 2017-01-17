@@ -210,13 +210,12 @@ int main(int argc, char *argv[])
 	}
 	if(!yyparse()){
 		fprintf(stderr,"Parsing complete.\n");
-		//print_tree(treeroot,0);
 		semantics(treeroot);
 		fprintf(stderr,"Semantics check complete.\n");
-		phase3_translate();
+		intermediate();
 		fprintf(stderr,"Translate complete.\n");
 		optimize();
-		interpret();
+		codegen();
 	}
 	else
 		printf("Error.\n");
