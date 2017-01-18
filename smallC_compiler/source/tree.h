@@ -62,15 +62,7 @@ char buffer[MAX_LENGTH];
 void print_tree(TreeNode* ptr, int depth) {
     int i;
     int n = (depth - 1) * 2;
-    /*
-    if (depth > 0) {
-        for (i = 0; i < n; i++) {
-            putchar(buffer[i]);
-        }
-        putchar('|');
-        puts("");
-    }
-    */
+    
     for (i = 0; i < n; i++) {
         putchar(buffer[i]);
     }
@@ -81,18 +73,10 @@ void print_tree(TreeNode* ptr, int depth) {
     n = depth * 2;
     buffer[n] = '|';
     buffer[n + 1] = ' ';
-    //printf("%s\n", ptr->data);
-    // terminal customized configuration
     if (ptr->size > 0) {
         printf("%s\n", ptr->data);
     } else {
         printf("\033[31;1m%s\033[0m\n", ptr->data);
-        /*
-        for (i = 0; i < n; i++) {
-            putchar(buffer[i]);
-        }
-        puts("");
-        */
     }
     for (i = 0; i < ptr->size; i++) {
         if (i == ptr->size - 1) {

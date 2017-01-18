@@ -17,4 +17,4 @@ lex.yy.c:smallc.l def.h node.h tree.h semantics.h intermediate.h optimize.h code
 	$(LEX) smallc.l
 
 clean:
-	@rm -f *.o *.c *.tab.* *.err *.output InterCode MIPSCode.s scc
+	@rm -f *.o *.c *.tab.* *.err *.output

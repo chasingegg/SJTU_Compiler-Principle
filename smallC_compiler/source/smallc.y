@@ -202,10 +202,10 @@ void yyerror(char *s)
 int main(int argc, char *argv[])
 {
 	freopen(argv[1], "r", stdin);
-	if(argc == 2) {
+	if(argc == 2) {  // ./scc testfile
     		freopen("MIPSCode.s", "w", stdout);
 	}
-	else if(argc == 3){
+	else if(argc == 3){ // ./scc input output
 		freopen(argv[2], "w", stdout);
 	}
 	if(!yyparse()){

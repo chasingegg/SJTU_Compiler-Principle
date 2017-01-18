@@ -70,7 +70,6 @@ bool find_id(TreeNode *p);
 int find_struct_id(char* s, char*s2);
 void semantics_check_stmt(TreeNode *p);
 void semantics(TreeNode *p);
-//void struct_check_id(char* s1, char* s2);
 
 int get_width_semantics(char* s) {
 	int tmp_level = level, tmp_depth = cnt[level];
@@ -261,7 +260,7 @@ void semantics_check_paras(TreeNode *p,char *s) {
 	if (p->size>=1) {
 		++tmp_num_of_var;
 		if (env[level+1][cnt[level+1]+1].table.find(p->children[0]->data)==env[level+1][cnt[level+1]+1].table.end()) {
-		 // to see whether multiple declarations of a variable
+		 
 			env[level+1][cnt[level+1]+1].table[p->children[0]->data] = "int";
 			env[level+1][cnt[level+1]+1].width_table[p->children[0]->data] = 1;
 		}
@@ -278,11 +277,8 @@ char* semantics_check_type(TreeNode *p) {
 }
 
 bool vector_find(vector<int> p, int num) {
-	//cout << "vector_find" << endl;
 	int i, sz = p.size();
-	//cout << num << endl;
 	for (i = 0; i < sz; ++i) {
-		//cout << p[i] << endl;
 		if (p[i]==num) return true;
 	}
 	return false;
@@ -311,7 +307,7 @@ void semantics_check_func(TreeNode *p) {
 			++func_vector_cnt;
 		}
 		else {	// function name exists, check whether it's an overloaded function
-			/*just rename it!!!!!!!!!!!*/
+			/*just rename it!*/
 			if (!vector_find(func_table[p->children[0]->data],tmp_num_of_var)) { //overloaded function
 		   		func_table[p->children[0]->data].push_back(tmp_num_of_var);
 				if (func_table[p->children[0]->data].size()>=2) {
@@ -359,7 +355,7 @@ bool semantics_check_id(char* s,int num) {
 	else return true; 
 }
 
-void semantics_check_var(TreeNode *p) {//OK
+void semantics_check_var(TreeNode *p) {
 	if (p->size==1) {
 		if (semantics_check_id(p->children[0]->data,p->children[0]->line_num)) {  //new variable name
 			if (level==0&&func_table.find(p->children[0]->data)!=func_table.end()) 
@@ -480,7 +476,6 @@ void semantics_check_arrs(TreeNode *p) { //arrays
 }
 
 void semantics_check_args(TreeNode *p, char *s) { //arguments of function
-	//cout << "args" << endl;
 	if (s==NULL) return;
 	if (p->size==2) {
 		semantics_check_exp(p->children[0],s);//1 means it's the check process of arguemnts
@@ -525,7 +520,7 @@ void semantics_check_exps(TreeNode *p) {
 	else if (!strcmp(p->data,"exps ()")) {
 		semantics_check_exps(p->children[0]);
 	}
-	else if (!strcmp(p->data,"exps arr")) { //intergers or arrays!!!!
+	else if (!strcmp(p->data,"exps arr")) { //intergers or arrays
 		if (!find_id(p->children[0])) {
 			report_err("No variable named",p->children[0]->data,p->children[0]->line_num);
 		}
@@ -549,7 +544,7 @@ void semantics_check_exps(TreeNode *p) {
 		}
 		semantics_check_exps(p->children[1]);
 	}
-	else if (!strcmp(p->data,"exps struct")) { //structs!!!
+	else if (!strcmp(p->data,"exps struct")) { //structs
 		int sjtu = find_struct_id(p->children[0]->data,p->children[2]->data);
 		if (sjtu==0) {
 			report_err("No such struct named", p->children[0]->data,p->children[0]->line_num);
@@ -657,8 +652,7 @@ void semantics_check_stmt(TreeNode *p) {
 		in_for =  false;
 	}
 	else if (!strcmp("read stmt",p->data)) {
-		check_left_value_exps(p->children[0]);
-			//check if it's a left value
+		check_left_value_exps(p->children[0]);  //check if it's a left value
 	}
 	else if( !strcmp("write stmt",p->data)) {
 		semantics_check_exps(p->children[0]);

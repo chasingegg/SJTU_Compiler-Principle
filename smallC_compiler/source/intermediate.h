@@ -137,22 +137,18 @@ void ir_print(vector <Quadruple> IR){
 						fout << "$v0";
 					}
                     			else if (IR[i].arguments[j].real != -1) {
-                        			//printf( "$%d", IR[i].arguments[j].real);
 						fout << "$" << IR[i].arguments[j].real;
-                   			} else {
-                        			//printf("t%d", IR[i].arguments[j].value);
+                   			} else {                   
 						fout << "t" << IR[i].arguments[j].value;
                     			}
 					break;
 				case ADDRESS_CONSTANT:
-					//printf("%d", IR[i].arguments[j].value);
 					fout << IR[i].arguments[j].value;
 					break;
 				case ADDRESS_NAME:
 					fout << IR[i].arguments[j].name;
 					break;
 				case ADDRESS_LABEL:
-					//printf("l%d", IR[i].arguments[j].value);
 					fout << "l"<< IR[i].arguments[j].value;
 					break;
 				default: break;
@@ -223,7 +219,7 @@ Quadruple new_quadruple_sw_offset(int ra, int rb, int offset) {
     return ret;
 }
 
-Quadruple new_quadruple_gnew(int size, int reg) {  //为了方便调试, 或许可以把名字打进去
+Quadruple new_quadruple_gnew(int size, int reg) {  
     Quadruple ret = new_quadruple();
     ret.op = "gnew";
     ret.arguments[0].type = ADDRESS_CONSTANT;
@@ -309,6 +305,14 @@ Quadruple new_quadruple_sw(int ra, int rb) {
     return ret;
 }
 
+Quadruple new_quadruple_label() {
+    Quadruple ret = new_quadruple();
+    ret.op = "label";
+    ret.arguments[0].type = ADDRESS_LABEL;
+    ret.arguments[0].value = label_count++;
+    return ret;
+}
+
 Quadruple new_quadruple_goto(int value) {
     Quadruple ret = new_quadruple();
     ret.op = "goto";
@@ -317,13 +321,7 @@ Quadruple new_quadruple_goto(int value) {
     return ret;
 }
 
-Quadruple new_quadruple_label() {
-    Quadruple ret = new_quadruple();
-    ret.op = "label";
-    ret.arguments[0].type = ADDRESS_LABEL;
-    ret.arguments[0].value = label_count++;
-    return ret;
-}
+
 
 Quadruple new_quadruple_call(char *s) {
     Quadruple ret = new_quadruple();
@@ -556,9 +554,6 @@ void translate_init(TreeNode *p, int tmp) {
 	if (!strcmp(p->data,"init")) {
 		translate_exps(p->children[0],tmp);
 	}
-	else {
-		
-	}
 }
 
 void translate_args_1(TreeNode *p, int reg) {
@@ -683,7 +678,6 @@ void translate_var_local(TreeNode *p,int reg) {
         	quadruple_flag = 0;
         	IR_push_back(new_quadruple_move(reg, t));
 		set_register_state_to_address(reg);
-		//fout << "reg" << reg << endl;
 		vs_id.push_back(p->children[0]->data);
 		vs_reg.push_back(reg);
 	}
@@ -714,7 +708,7 @@ void translate_stmt(TreeNode *p) {
 	if (!strcmp("return stmt",p->data)) {
 		int t0 = new_register(), t1 = new_register();
 		translate_exps(p->children[1],t1);
-		IR_push_back(new_quadruple_arithmetic_im("add", t0, stack_pointer, 4*tmp_num_var + 4));// store the return value
+		IR_push_back(new_quadruple_arithmetic_im("add", t0, stack_pointer, 4*tmp_num_var + 4));
             	translate_assignment(t0, t1);
 		IR_push_back(new_quadruple_ret());
 	}
@@ -744,14 +738,13 @@ void translate_stmt(TreeNode *p) {
             		IR_push_back(new_quadruple_lw_offset(retad_pointer, stack_pointer, -10000));
         	}
 		IR_push_back(new_quadruple_sw(v0,reg));
-		/* all exps that could be a left value could be here*/
 		
 	}
 	else if (!strcmp("stmt: exp;",p->data)) {
 		translate_exp(p->children[0]);
 	}
 	else if (!strcmp("if stmt",p->data)) {
-		//if (a) then b; else c     ->      (a->L1) | b | goto L2 | label: L1 | c | label: L2
+		
     		Quadruple t1 = new_quadruple_label();
    	 	Quadruple t2 = new_quadruple_label();
     		Quadruple t3 = new_quadruple_goto(get_label_number(t2));
@@ -764,14 +757,13 @@ void translate_stmt(TreeNode *p) {
     		}
     		IR_push_back(t2);
 	}
-	// let's make the logic clear here: if the judgement is right, then we will just execute the following stmt until we meet the goto L2, avoid continuing executing the following; if it's false, we will go to L1 directly
 	else if (!strcmp("stmt",p->data)) {
 		translate_stmtblock(p->children[0]);
 	}
 	else if (!strcmp("for stmt",p->data)) {
 		Quadruple t1 = new_quadruple_label();
     		Quadruple t2 = new_quadruple_label();
-		/*for(a;b;c)d;      ->      a | (b->L3) | label L1 | d | label L2 | c | (!b->L1) | label L3*/
+		
         	TreeNode *a = NULL, *b = NULL, *c = NULL;
 		if (p->children[0]->size!=0) a = p->children[0]->children[0];
         	if (p->children[1]->size!=0) b = p->children[1]->children[0];
@@ -832,22 +824,6 @@ void translate_assignment(int reg_l, int reg_r) { //problems may arise here
         IR_push_back(new_quadruple_sw(reg_r, reg_l));
 }
 
-void translate_args(TreeNode *p) {
-	if (p->size>1)
-		translate_args(p->children[1]);
-	if (p->children[0]->size==0) return;
-	current_sp += 4;
-        int t0 = new_register();
-        //fprintf(stderr,"t0 %d\n",t0);
-        translate_exps(p->children[0]->children[0], t0);
-        int t1 = new_register();
-        set_register_state_to_address(t1);
-        quadruple_flag = 1;
-        IR_push_back(new_quadruple_arithmetic_im("add", t1, stack_pointer, -current_sp + function_begin_sp));//to pass value of the parameters
-        quadruple_flag = 0;
-        translate_assignment(t1, t0);
-}
-
 int find_array_size(char *s) {
 	int tmp_level = translate_level, tmp_depth = translate_cnt[translate_level];
 	while (1) {
@@ -865,6 +841,22 @@ int find_array_size(char *s) {
 	}
 }
 
+void translate_args(TreeNode *p) {
+	if (p->size>1)
+		translate_args(p->children[1]);
+	if (p->children[0]->size==0) return;
+	current_sp += 4;
+        int t0 = new_register();
+        translate_exps(p->children[0]->children[0], t0);
+        int t1 = new_register();
+        set_register_state_to_address(t1);
+        quadruple_flag = 1;
+        IR_push_back(new_quadruple_arithmetic_im("add", t1, stack_pointer, -current_sp + function_begin_sp));
+        quadruple_flag = 0;
+        translate_assignment(t1, t0);
+}
+
+
 void translate_arrs(TreeNode *p, int reg, char *s) {
 	if (p->size==0) return;
 	++arrs_cnt;
@@ -872,22 +864,15 @@ void translate_arrs(TreeNode *p, int reg, char *s) {
         translate_exps(p->children[0]->children[0], t0);
         catch_value_self(t0);
         catch_value_self(reg);
-	//int zzy = env[translate_level][translate_cnt[translate_level]].array_size_table[s][arrs_cnt-1];
+
 	int zzy = find_array_size(s);
-        //if (p->info->type == ARRAY) {
         IR_push_back(new_quadruple_arithmetic_im("mul", t1, t0, zzy));
         set_register_state_to_value(reg);
-        /*} else {
-            ir_push_back(&ir, new_quadruple_arithmetic_im("mul", t1, t0, p->info->width));
-            set_register_state_to_address(reg);
-        }*/
+       
         IR_push_back(new_quadruple_arithmetic("add", reg, reg, t1));
 	translate_arrs(p->children[1],reg,s);
 }
 
-void translate_sdefs(TreeNode *p) {
-
-}
 
 void translate_exps(TreeNode *p, int reg) {
 	if (p->type == _INT) {
@@ -977,7 +962,7 @@ void translate_exps(TreeNode *p, int reg) {
 			case '!': catch_value_self(reg);IR_push_back(new_quadruple_arithmetic_unary("lnot", reg, reg)); break;
 			case '+': if (p->children[0]->data[1]=='+') { //++ case
         			assert(get_register_state(reg) == REGISTER_STATE_ADDRESS);
-        			int t0 = new_register();// use t0 as a temporary reg to store the original address
+        			int t0 = new_register();// use t0 as a temporary reg 
         			IR_push_back(new_quadruple_move(t0, reg));
         			set_register_state_to_value(reg);
         			IR_push_back(new_quadruple_lw(reg, reg));
@@ -1047,11 +1032,7 @@ void translate_exps(TreeNode *p, int reg) {
                 	} else { // an varaible of type int
                     		set_register_state_to_address(reg);
                 	}
-            	} else {
-		       //array pointer
-                //set_register_state_to_value(reg);
-                //IR_push_back(new_quadruple_lw(reg, tmp));
-            	}
+            	} 
 	}
 	else if (!strcmp("exps struct",p->data)) { //dot op
 		int tmp = vs_fetch_register(p->children[0]->data);
@@ -1083,7 +1064,7 @@ void translate_exps(TreeNode *p, int reg) {
         	}
 		assert(get_register_state(reg) == REGISTER_STATE_ADDRESS);
         	IR_push_back(new_quadruple_lw(t, reg));
-        	catch_value_self(tmp);  //problems may arise here
+        	catch_value_self(tmp); 
         	IR_push_back(new_quadruple_arithmetic(op, t, t, tmp));
         	IR_push_back(new_quadruple_sw(t, reg));
 	}

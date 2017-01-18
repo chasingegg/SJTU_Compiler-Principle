@@ -1,0 +1,23 @@
+file structure:
+def.h   		---------- common header
+node.h  		---------- definition of syntax tree
+tree.h  		---------- implementation of syntax tree
+small.l 		---------- lexical analyzer
+small.y         	---------- syntax analyzer
+semantics.h     	---------- check semantic errors
+intermediate.h  	---------- intermediate code generation
+optimize.h      	---------- optimizations
+codegen.h      		---------- MIPS code generation
+test                    ---------- simple test case
+InterCode               ---------- intermediate code for the simple test case provided
+MIPSCode.s              ---------- MIPS code for the simple test case provided
+scc                     ---------- executable file
+README                  ---------- this file
+makefile                ---------- makefile
+5142029014-report.pdf   ---------- project report
+
+
+how to use:
+run ./scc testfile in the terminal, you will get IR code in InterCode and MIPS code in MIPSCode.s
+or run ./scc input output in the terminal, you will get IR code in InterCode and MIPS code in output
+

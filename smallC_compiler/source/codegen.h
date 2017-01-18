@@ -89,8 +89,6 @@ void codegen_global() {
 }
 
 void codegen_generate_mips(Quadruple tuple,int delta) {
-	//cout << "tuple.op ";
-	//cout << tuple.op << endl;
 	string s = tuple.op;
 	int i;
 	for (i = 0; i < 3; i++) {
@@ -115,7 +113,7 @@ void codegen_generate_mips(Quadruple tuple,int delta) {
     	} else if (s=="goto") {
         	printf("j %s%d\n", labelname, tuple.arguments[0].value);
 	} else if (s=="beqz"||s=="bnez" || s=="bgez" || s=="bgtz" || s=="blez" || s=="bltz") {
-        	int src = codegen_fetch_register(tuple.arguments[0], 8); //$t0
+        	int src = codegen_fetch_register(tuple.arguments[0], 8); 
         	printf("%s $%d, %s%d\n", s.c_str(), src, labelname, tuple.arguments[1].value);
     	} else if (s=="add"||s=="sub"||s=="mul"||s=="div"||s=="rem"||s=="or"||s=="xor"||s=="and"||s=="sll"||s=="srl" ) {
         		int dest = get_register_id(tuple.arguments[0], 8);
@@ -188,7 +186,6 @@ void codegen_generate_mips(Quadruple tuple,int delta) {
         	flag &= tuple.arguments[0].name!="__printf_one";
         	if (flag) {
             		for (i = real_register_begin; i < real_register_end; i++) {
-				//fprintf(stderr,"which [%d] %d \n",i,which[i]);
                 		if (which[i] != -1) {	
                     			int x = which[i];
                     			assert(x != stack_pointer && x != retad_pointer);
@@ -225,11 +222,8 @@ void codegen_generate_mips(Quadruple tuple,int delta) {
 }
 
 void codegen_local() {
-	printf("\n.read()_and_write()\n");
-	FILE* builtin = fopen("w_r.s", "r");
-    	while (fgets(ibuffer, MAX_LENGTH, builtin)) {
-        	printf("%s", ibuffer);
-    	}
+	printf("\n.text\n");
+	printf("__printf_one:\nli $v0, 1\nsyscall\njr $ra\n__scanf_one:\nli $v0,5\nsyscall\njr $ra\n\n");
 	int i = 0;
 	in_main = 0;
 	for (i = 0; i < IR.size(); ++i) {

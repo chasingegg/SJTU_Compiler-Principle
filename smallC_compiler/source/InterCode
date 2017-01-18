@@ -1,0 +1,18 @@
+gir print------------------------------------
+mir print------------------------------------
+ir print-------------------------------------
+#0func	main
+#1		add	t3	$sp	-28
+#2		move	t2	t3	
+#3		move	t4	t2	
+#4		call	__scanf_one
+#5		sw	$v0	t4	0
+#6		move	t5	t2	
+#7		lw	t5	t5	0
+#8		move	$a0	t5	
+#9		call	__printf_one
+#10		li	t7	0	
+#11		add	t6	$sp	4
+#12		sw	t7	t6	0
+#13		ret	
+#14		ret	

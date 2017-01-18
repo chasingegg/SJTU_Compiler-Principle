@@ -3,6 +3,7 @@
   file: optimize.h
   This program does some optimizations and allocates registers.
 */
+
 #ifndef FILE_OPTIMIZE_H
 #define FILE_OPTIMIZE_H
 
@@ -47,16 +48,6 @@ LinkedList* new_linked_list() {
     return ptr;
 }
 
-void linked_list_insert(LinkedList* ptr, int value) {
-    if (value == stack_pointer || value == retad_pointer) {
-        return;
-    }
-    LinkedListNode* itr = new_linked_list_node();
-    itr->value = value;
-    itr->next = ptr->begin;
-    ptr->begin = itr;
-}
-
 int linked_list_find(LinkedList* ptr, int value) {
     LinkedListNode* itr;
     for (itr = ptr->begin; itr != ptr->end; itr = itr->next) {
@@ -65,6 +56,16 @@ int linked_list_find(LinkedList* ptr, int value) {
         }
     }
     return 0;
+}
+
+void linked_list_insert(LinkedList* ptr, int value) {
+    if (value == stack_pointer || value == retad_pointer) {
+        return;
+    }
+    LinkedListNode* itr = new_linked_list_node();
+    itr->value = value;
+    itr->next = ptr->begin;
+    ptr->begin = itr;
 }
 
 int cmp(const void* a, const void* b) {
@@ -83,7 +84,7 @@ int optimize_merge_set(LinkedList* x, LinkedList* y) {
     int ret = 0;
     LinkedListNode* itr;
     for (itr = y->begin; itr != y->end; itr = itr->next) {
-        if (!linked_list_find(x, itr->value)) {             //TO_SPEED_UP, using timestamp
+        if (!linked_list_find(x, itr->value)) {  //TO_SPEED_UP, using timestamp
             ret = 1;
             linked_list_insert(x, itr->value);
         }
@@ -130,7 +131,6 @@ int optimize_calc_in_out(int i, int j) {
             ret |= optimize_merge_set(out[k], in[next_pos[k + 1]]);
         }
         ret |= optimize_merge_set_1(in[k], out[k], def[k]);
-        //fprintf(stderr, "k=%d\n", k);
     }
     return ret;
 }
@@ -209,7 +209,6 @@ void optimize_register_allocate(int i, int j) {
     }
     for (k = 0; k < n; k++) {
         int x = list[k];
-        //fprintf(stderr, "t%d %d %d->%d\n", x, real[x], register_liveness_begin[x], register_liveness_end[x]);
     }
     for (k = i; k <= j; k = next_pos[k + 1]) {
         Quadruple t = IR[k];
@@ -218,7 +217,6 @@ void optimize_register_allocate(int i, int j) {
                 int x = t.arguments[l].value;
                 if (real[x] != -1) {
                     IR[k].arguments[l].real = real[x];
-		    //fprintf(stderr, "real[%d] %d\n",x,real[x]);
                     if (RegisterOffset[x] == -1 && !loaded[x]) {
                         loaded[x] = 1;
                         IR[k].arguments[l].needload = register_liveness_begin[x] == i + 1;
@@ -250,9 +248,6 @@ void update_pos() {
             prev_pos[i] = prev_pos[i - 1];
         }
     }
-    /*for (i = 0; i < IR.size();++i) {
-		fprintf(stderr, "prev_pos[%d] %d\n",i,prev_pos[i]);
-	}*/
 }
 
 void optimize_1() { //through observation
@@ -292,8 +287,6 @@ void optimize_1() { //through observation
         if (active_flag == 2) {
             continue;
         }
-	//fprintf(stderr,"active_flag %d\n",active_flag);
-        //只要会被重新赋值, 就可以扔掉
         int flag = active_flag || (y.op!="sw");
         if (flag) {
             IR[i].active = 0;
@@ -362,7 +355,7 @@ void optimize_3() {
     update_pos();
 }
 
-void optimize_4() {
+void register_allo() {
     label_to_ins = (int*)malloc(sizeof(int) * IR.size());
     null = new_linked_list_node();
     null->next = null;
@@ -447,7 +440,6 @@ void optimize_4() {
 		cout << t.op << endl;
                 assert(0);
             }
-            //fprintf(stderr, "k=%d\n",k);
         }
         while (optimize_calc_in_out(j, i));
         optimize_register_allocate(j, i);
@@ -462,7 +454,7 @@ void optimize() {
 	//optimize_1();
 	optimize_2();
 	optimize_3();
-	optimize_4();
+	register_allo();
 }
 
 #endif
